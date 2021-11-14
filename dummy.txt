@@ -1,0 +1,12 @@
+#Estructura
+
+/index.php
+config.json
+composer.json
+vendor/
+src/
+templates/
+public/
+    /css
+    /img
+    /js
