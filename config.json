@@ -1,0 +1,18 @@
+{
+    "conf_dev": {
+        "driver": "mysql",
+        "dbhost": "127.0.0.1",
+        "dbname": "mvc",
+        "dbuser": "root",
+        "dbpass": "password",
+        "web": "/"
+    },
+    "conf_pro": {
+        "driver": "mysql",
+        "dbhost": "dominio.com",
+        "dbname": "mvc",
+        "dbuser": "root",
+        "dbpass": "password",
+        "web": "/"
+    }
+}
