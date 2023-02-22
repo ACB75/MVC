@@ -4,6 +4,7 @@ namespace App\Models;
 
 use PDO;
 use PDOException;
+use stdClass;
 
 class Library
 {
@@ -40,8 +41,8 @@ class Library
                   else
                         $this->year = "";
                   //map
-                  if (!empty($user[0]))
-                        $this->map = $library[0];
+                  if ($library)
+                        $this->map = $library;
             }
             //obj
             else if (is_object($library)) {

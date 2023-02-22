@@ -9,7 +9,7 @@ final class App
     protected Session $session;
     protected Request $request;
     protected $action;
-
+    protected $params;
 
     public function __construct()
     {
@@ -22,10 +22,10 @@ final class App
         $controller = $this->request->getController();
         $this->action = $this->request->getAction();
 
-        self::dispatch($controller, $routes, $this->session, $this->request, $this->action);
+        self::dispatch($controller, $routes, $this->session, $this->request, $this->action, $this->params);
     }
 
-    private static function dispatch($controller, $routes, $session, $request, $action): void
+    private static function dispatch($controller, $routes, $session, $request, $action, $params): void
     {
         try {
             //si es ruta de sistema es pot instanciar

@@ -105,21 +105,32 @@ class IndexController extends Controller
 			$this->form->label('Author');
 			$this->form->input('string', 'c_author', '', true, 'Miguel de Cervantes');
 			$this->form->label('ISBN');
-			$this->form->input('string', 'c_isbn', '', true, 'XXX123XXX456XXX789');
+			$this->form->input('string', 'c_isbn', '', true, '9781234567897');
 			$this->form->label('Title');
 			$this->form->input('string', 'c_title', '', true, 'El Ingenioso Hidalgo Don Quijote de la Mancha');
 			$this->form->label('Year');
-			$this->form->input('string', 'c_year', '', true, '1984');
+			$this->form->input('string', 'c_year', '', true, '2001');
 			$this->form->submit('libraryCreate', 'Create');
 			$this->form->close();
 
-			return $this->view('index', ["form" => $this->form]);
+			return $this->view('index', ["form" => $this->form, "user" => $user]);
 		}
 	}
 
+	//
 	function library_read()
 	{
-		//return $this->view('index', ["form" => $this->form]);
+		header('Location:/library/read');
+	}
+
+	function library_update()
+	{
+		header('Location:/library/update');
+	}
+
+	function library_delete()
+	{
+		header('Location:/library/delete');
 	}
 
 	function user_x_library()

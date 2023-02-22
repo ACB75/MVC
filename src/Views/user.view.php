@@ -5,8 +5,7 @@ include 'partials/header.tpl.php';
   <section class="container">
     <h2> USER </h2>
     <?php
-    if ($data["user"]) {
-
+    if (key_exists("user", $data)) {
       if ($data["user"]->getName() === 'master')
         $role = "<a class='btn btn-outline-light' type='button' href='/index/library_create'> Create Book </a>";
       else

@@ -45,9 +45,10 @@ class DB
                 return $this->pdo->lastInsertId();
             } catch (PDOException $e) {
                 echo $e->getMessage();
-                return 0;
             }
         }
+
+        return -1;
     }
 
     function selectAll($table): array
@@ -160,10 +161,10 @@ class DB
             return false;
     }
 
-    function delete(string $table, $id)
+    function delete(string $data, $key, $value)
     {
 
-        $sql = "DELETE FROM {$table} WHERE id='{$id}'";
+        $sql = "DELETE FROM {$data} WHERE {$key} = '{$value}'";
 
         $stmt = $this->query($sql);
         $res = $stmt->execute();

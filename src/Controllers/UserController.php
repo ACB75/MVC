@@ -36,7 +36,7 @@ class UserController extends Controller
 
 			$result = $this->getDB()->insert('User', $data);
 
-			if ($result == 0 || $result == null)
+			if ($result == 0 || $result == -1 || $result == null)
 				return $this->view('error', ['error' => 'Something went wrong with the process :(']);
 
 			$data = array_replace($data, ["id" => $result]);
@@ -144,27 +144,20 @@ class UserController extends Controller
 	{
 		//index/dashboard
 		if ($this->session->exists("User")) {
-
-			$changes = false;
 			$user = new User($this->session->get("User"));
-			$data = ["id" => $user->getId(), "name" => $user->getName(), "email" => $user->getEmail(), "password" => $user->getPassword()];
-
 			if ($this->isset_notEmpty_POST('csrf-token')) {
 				$token = filter_input(INPUT_POST, 'csrf-token', FILTER_SANITIZE_STRING);
 				if ($this->check_csrf($token))
 					return $this->view('error', ['error' => 'CSRFed!!!']);
 			}
-
 			$user = $this->session->get("User");
-			$data = ["id" => $user->getId()];
-
-			if($data["id"] != null || $data["id"] != ""){
-				$result = $this->getDB()->delete('User', $data["id"]);
+			if ($user->getId() != null || $user->getId() != "") {
+				$this->getDB()->delete('User', 'id', $user->getId());
 				header('Location:/index/logout');
-			}
-			else return $this->view('error', ['error' => "User id not in session"]);
-		}
-		else return $this->view('error', ['error' => "User in session, please login in before. Stop breaking App >:("]);
+			} else
+				return $this->view('error', ['error' => "User id not in session"]);
+		} else
+			return $this->view('error', ['error' => "Stop breaking App >:("]);
 	}
 
 	//Helpers && BL
@@ -181,7 +174,6 @@ class UserController extends Controller
 				$data = array_replace($data, ["id" => $result[0]->id]);
 				return new User($result[0]);
 			}
-
 		} catch (\Exception $e) {
 			die($e->getMessage());
 		}

@@ -32,11 +32,20 @@
                         <div class="text-end">
                               <?php
                               if (array_key_exists("user", $data)) {
-                                    $display =
-                                          "<a type='button' class='btn btn-outline-light me-2' href='/index/logout'>Logout</a>
-                                                <a type='button' class='btn btn-warning' href='/index/dashboard'>Dashboard</a>";
-                                    echo $display;
-
+                                    if ($data["user"] != null) {
+                                          $display =
+                                                "<a type='button' class='btn btn-outline-light me-3' href='/index/logout'>Logout</a>
+                                                <a type='button' class='btn btn-warning me-3' href='/index/dashboard'>Dashboard</a>
+                                                     <a type='button' class='btn btn-warning me-3' href='/index/library_read'>Library</a>";
+                                          if ($data["user"]->getName() === 'master')
+                                                $display .= "<a type='button' class='btn btn-warning' href='/index/library_create'> Create Book </a>";
+                                          echo $display;
+                                    } else {
+                                          $display =
+                                                "<a type='button' class='btn btn-outline-light me-2' href='/index/login'>Login</a>
+                                                <a type='button' class='btn btn-warning' href='/index/register'>Register</a>";
+                                          echo $display;
+                                    }
                               } else {
                                     $display =
                                           "<a type='button' class='btn btn-outline-light me-2' href='/index/login'>Login</a>

@@ -20,7 +20,7 @@ class LibraryController extends Controller
             if ($this->isset_notEmpty_POST('csrf-token')) {
                   $token = filter_input(INPUT_POST, 'csrf-token', FILTER_SANITIZE_STRING);
                   if ($this->check_csrf($token))
-                        return $this->view('error', ['error' => 'CSRFed!!!']);
+                        return $this->view('error', ['error' => 'CSRFed!!!', "user" => $this->session->get("user")]);
             }
 
             if ($this->isset_notEmpty_POST('c_author') && $this->isset_notEmpty_POST('c_isbn') && $this->isset_notEmpty_POST('c_title') && $this->isset_notEmpty_POST('c_year')) {
@@ -35,42 +35,66 @@ class LibraryController extends Controller
                   $library = $this->auth($data);
 
                   if ($library != null)
-                        return $this->view('error', ['error' => 'Book with ISBN: ' . $isbn . ' already exists.']);
+                        return $this->view('error', ['error' => 'Book with ISBN: ' . $isbn . ' already exists.', "user" => $this->session->get("user")]);
 
                   $result = $this->getDB()->insert('Library', $data);
 
-                  if ($result == 0 || $result == null)
-                        return $this->view('error', ['error' => 'Something went wrong with the process :(']);
+                  if ($result == -1)
+                        return $this->view('error', ['error' => 'Something went wrong with the process :(', "user" => $this->session->get("user")]);
 
                   $data = array_replace($data, ["isbn" => $result]);
-                  $user = new Library($data);
+                  $library[] = new Library($data);
 
-                  $this->session->set("Library", $user);
+                  if ($this->session->get('user'))
+                        return $this->view('library', ['library' => $library, 'user' => $this->session->get('User')]);
 
-                  return $this->view('library', ['Library' => $user]);
+                  return $this->view('library', ['library' => $library, 'user' => $this->session->get('User')]);
             }
       }
 
       function read()
       {
-		$result = $this->getDB()->selectAll('Library');
-            if (!empty($result)) {
-                  return $this->view('library', ['Library' => new Library($result[0])]);
+            if ($this->session->get('User')) {
+                  $result = $this->getDB()->selectAll('Library');
+                  if (!empty($result)) {
+                        foreach ($result as $lib)
+                              $library[] = new Library($lib);
+
+                        return $this->view('library', ['library' => $library, 'user' => $this->session->get('User')]);
+                  } else
+                        return $this->view('library', ['error' => "No result."]);
+            } else {
+                  $result = $this->getDB()->selectAll('Library');
+                  if (!empty($result)) {
+                        foreach ($result as $lib)
+                              $library[] = new Library($lib);
+
+                        return $this->view('library', ['library' => $library, 'user' => $this->session->get('User')]);
+                  } else
+                        return $this->view('library', ['error' => "No result."]);
             }
-            else return $this->view('library', ['error' => "No result."]);
       }
+
 
       function update()
       {
-            //index/dashboard
-            echo "Hello There :D!";
-
+            //index/library_update
       }
 
       function delete()
       {
-            //index/dashboard
-            echo "Hello There :D!";
+            $isbn = $this->request->getParams();
+            $user = $this->session->get("User");
+            //index/library_delete
+            if ($isbn != "") {
+                  $res = $this->getDB()->delete('User', 'isbn', $isbn);
+                  if ($res) {
+                        return $this->read();
+                  } else
+                        return $this->view('error', ['error' => "library/delete res failed", "user" => $user]);
+            }
+            return $this->view('error', ['error' => "library/delete isbn null", "user" => $user]);
+
       }
 
       //Helpers && BL
@@ -92,4 +116,6 @@ class LibraryController extends Controller
 			die($e->getMessage());
 		}
 	}
+
+      
 }

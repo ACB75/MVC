@@ -7,8 +7,7 @@ class Request
     private $controller;
     private $action;
     private $method;
-    private $params;
-
+    protected $params;
     protected $arrURI;
 
     function __construct()
@@ -52,14 +51,15 @@ class Request
             default: // cont. & act & params
                 $this->setController($this->arrURI[0]);
                 $this->setAction($this->arrURI[1]);
-                $this->Params();
+                $this->setAction($this->arrURI[1]);
+                $this->setParams($this->params());
                 break;
         }
         $this->setMethod(\htmlentities($_SERVER['REQUEST_METHOD']));
 
     }
 
-    private function Params(): void
+    private function params()
     {
         if ($this->arrURI != null) {
             $arr_length = count($this->arrURI);
@@ -77,9 +77,8 @@ class Request
                         }
                     }
                     $array_res = array_combine($arr_k, $arr_v);
-                    $this->setParams($array_res);
+                    return $array_res;
                 }
-
             }
 
         }

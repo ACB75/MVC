@@ -31,7 +31,7 @@ class FormBuilder
         $required = $required ? 'required' : '';
         $disabled = $disabled ? 'disabled' : '';
         
-        $this->elements[] = "<input type=\"$type\" class=\"form-control mb-3\" name=\"$name\" id=\"$name\" value=\"$value\" value=\"$placeholder\" $required $disabled/>";
+        $this->elements[] = "<input type=\"$type\" class=\"form-control mb-3\" name=\"$name\" id=\"$name\" value=\"$value\" placeholder=\"$placeholder\" $required $disabled/>";
         return $this;
     }
 
