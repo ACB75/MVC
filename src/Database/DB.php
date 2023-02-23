@@ -135,12 +135,12 @@ class DB
         return $rows;
     }
 
-    function update(string $table, array $data)
+    function update(string $table, array $data, $key)
     {
-        if ($data && $data["id"] != "") {
+        if ($data && $data[$key] != "") {
 
             $changes = "";
-            $id = $data["id"];
+            $value = $data[$key];
             $keys = array_keys($data);
             $values = array_values($data);
 
@@ -148,7 +148,7 @@ class DB
                 $changes .= $keys[$i] . "='" . $values[$i] . "',";
 
             $changes = substr($changes, 0, -1);
-            $cond = "id='{$id}'";
+            $cond = "$key='{$value}'";
             $sql = "UPDATE {$table} SET {$changes} WHERE {$cond}";
 
             $stmt = $this->query($sql);

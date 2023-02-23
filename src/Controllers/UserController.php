@@ -95,7 +95,7 @@ class UserController extends Controller
 			if ($this->isset_notEmpty_POST("u_name")) {
 				$changes = true;
 				$name = filter_input(INPUT_POST, 'u_name', FILTER_SANITIZE_STRING);
-				if ($user->getName() != $name) {
+				if ($user->getName() != $name && $name != "") {
 					$data = array_replace($data, ["name" => $name]);
 					$user->setName($name);
 				}
@@ -104,7 +104,7 @@ class UserController extends Controller
 			if ($this->isset_notEmpty_POST("u_email")) {
 				$changes = true;
 				$mail = filter_input(INPUT_POST, 'u_email', FILTER_SANITIZE_STRING);
-				if ($user->getEmail() != $mail) {
+				if ($user->getEmail() != $mail && $mail != "") {
 					$data = array_replace($data, ["email" => $mail]);
 					$user->setEmail($mail);
 				}
@@ -118,7 +118,7 @@ class UserController extends Controller
 				$curr_pwd = filter_input(INPUT_POST, 'curr_password', FILTER_SANITIZE_STRING);
 
 				if ($user->getPassword() != $pwd) {
-					if ($user->getPassword() == $curr_pwd && ($pwd === $re_pwd)) {
+					if ($user->getPassword() == $curr_pwd && ($pwd === $re_pwd) && $pwd != "") {
 						$data = array_replace($data, ["password" => $pwd]);
 						$user->setPassword($pwd);
 					}
@@ -127,7 +127,7 @@ class UserController extends Controller
 
 			if ($changes) {
 
-				$result = $this->getDB()->update('User', $data);
+				$result = $this->getDB()->update('User', $data, "id");
 				$user = $this->auth($data);
 
 				if ($result && $user != null) {

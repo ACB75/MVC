@@ -15,8 +15,9 @@ class IndexController extends Controller
 	function register()
 	{
 		$this->session->set('csrf-token', md5(uniqid(mt_rand(), true)));
-		$this->form = $this->getFormBuilder();
+
 		//User/Create
+		$this->form = $this->getFormBuilder();
 		$this->form->open('/user/create', 'POST');
 		$this->form->csrf($this->session->get("csrf-token"));
 		$this->form->label('Name');
@@ -30,12 +31,12 @@ class IndexController extends Controller
 
 		return $this->view('index', ["form" => $this->form]);
 	}
-
 	function login()
 	{
 		$this->session->set('csrf-token', md5(uniqid(mt_rand(), true)));
-		$this->form = $this->getFormBuilder();
+
 		//User/Read
+		$this->form = $this->getFormBuilder();
 		$this->form->open('/user/read', 'POST');
 		$this->form->csrf($this->session->get("csrf-token"));
 		$this->form->label('Username - Email');
@@ -48,13 +49,6 @@ class IndexController extends Controller
 		$this->form->close();
 
 		return $this->view('index', ["form" => $this->form]);
-	}
-
-	function logout()
-	{
-		$this->session->destroy();
-
-		return $this->view('index', ["See ya :)"]);
 	}
 
 	function dashboard()
@@ -86,8 +80,15 @@ class IndexController extends Controller
 			$this->form->csrf($this->session->get("csrf-token"));
 			$this->form->submit('userDelete', 'Delete');
 			$this->form->close();
-			return $this->view('index', ["form" => $this->form]);
+			return $this->view('index', ["form" => $this->form, "user" => $user]);
 		}
+	}
+
+	function logout()
+	{
+		$this->session->destroy();
+
+		return $this->view('index', ["See ya :)"]);
 	}
 
 	function library_create()
@@ -117,29 +118,57 @@ class IndexController extends Controller
 		}
 	}
 
-	//
 	function library_read()
 	{
+		//Library/Read
 		header('Location:/library/read');
 	}
 
 	function library_update()
 	{
-		header('Location:/library/update');
+		if ($this->session->exists("User")) {
+			$user = $this->session->get("User");
+			if ($user->getName() === 'master') {
+				//Library/Update
+				$params = $this->request->getParams();
+				$location = '/library/update/';
+				foreach ($params as $key => $value) {
+					$location .= $key . '/' . $value;
+					$this->form = $this->getFormBuilder();
+					$this->form->open($location, 'POST');
+					$this->form->csrf($this->session->get("csrf-token"));
+					$this->form->label('Update Author');
+					$this->form->input('string', 'u_author', '', true, 'Alonso Fernández de Avellaneda');
+					$this->form->label('Current ISBN');
+					$this->form->input('string', 'nu_isbn', $value, false, $value, true);
+					$this->form->label('Update Title');
+					$this->form->input('string', 'u_title', '', true, 'El Quijote de Avellaneda');
+					$this->form->label('Update Year');
+					$this->form->input('string', 'u_year', '', false, '1605');
+					$this->form->submit('libraryUpdate', 'Update');
+					$this->form->close();
+				}
+				return $this->view('index', ["form" => $this->form, "user" => $user]);
+			} else
+				return $this->view('error', ["error" => "Try with sudo :D", "user" => $user]);
+		} else
+			return $this->view('error', ["error" => "Not logged in."]);
 	}
 
 	function library_delete()
 	{
-		header('Location:/library/delete');
+		$params = $this->request->getParams();
+		$location = '/library/delete/';
+
+		foreach ($params as $key => $value) {
+			$location .= $key . '/' . $value;
+		}
+
+		header('Location:' . $location);
 	}
 
 	function user_x_library()
 	{
-		/*
-		if ($this->session->exists("User"))
-		return $this->view('library', []);
-		else
-		return $this->view("error", ["error" => "First u must be logged in. Stop breaking the app >:(."]);
-		*/
+
 	}
 }

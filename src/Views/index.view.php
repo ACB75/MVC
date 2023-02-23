@@ -15,7 +15,7 @@ include 'partials/header.tpl.php';
         <div class='h-100 p-5 text-bg-dark rounded-3'>
           <h2> Welcome Home </h2>
           <p> Browse books through our application, rent the book and enjoy reading. </p>
-          <a type='button' class='btn btn-outline-light me-2' href='/index/library_read'>Explore Books</a>
+          <a type='button' class='btn btn-outline-light me-1' href='/index/library_read'>Explore Books</a>
         </div>
       </div>";
       echo $data;
