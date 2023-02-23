@@ -157,18 +157,34 @@ class IndexController extends Controller
 
 	function library_delete()
 	{
-		$params = $this->request->getParams();
-		$location = '/library/delete/';
-
-		foreach ($params as $key => $value) {
-			$location .= $key . '/' . $value;
-		}
-
-		header('Location:' . $location);
+		if ($this->session->exists("User")) {
+			$params = $this->request->getParams();
+			$location = '/library/delete/';
+			foreach ($params as $key => $value) {
+				$location .= $key . '/' . $value;
+			}
+			header('Location:' . $location);
+		} else
+			return $this->view('error', ["error" => "Not logged in."]);
 	}
 
 	function user_x_library()
 	{
-
+		if ($this->session->exists("User")) {	
+			$params = $this->request->getParams();
+			if($params["devolver"] == "true"){
+				$location = '/userlibrary/delete/';
+			}
+			elseif ($params != null) {
+				$location = '/userlibrary/create/';
+				foreach ($params as $key => $value) {
+					$location .= $key . '/' . $value;
+				}
+			} else {
+				$location = '/userlibrary/read/';
+			}
+			header('Location:' . $location);
+		} else
+			return $this->view('error', ["error" => "Not logged in."]);
 	}
 }

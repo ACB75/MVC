@@ -9,9 +9,9 @@ class LibraryController extends Controller
       function index()
       {
             if ($this->session->get("User"))
-                  return $this->view('user', ["user" => $this->session->get("User")]);
+                  return $this->view('userlibrary', ["user" => $this->session->get("User")]);
             else
-                  return $this->view('library', []);
+                  return $this->view('userlibrary', []);
       }
 
 
@@ -63,7 +63,7 @@ class LibraryController extends Controller
 
                         return $this->view('library', ['library' => $library, 'user' => $this->session->get('User')]);
                   } else
-                        return $this->view('library', ['error' => "No result."]);
+                        return $this->view('library', ['error' => "No result.", 'user' => $this->session->get('User')]);
             } else {
                   $result = $this->getDB()->selectAll('Library');
                   if (!empty($result)) {
@@ -72,7 +72,7 @@ class LibraryController extends Controller
 
                         return $this->view('library', ['library' => $library, 'user' => $this->session->get('User')]);
                   } else
-                        return $this->view('library', ['error' => "No result."]);
+                        return $this->view('library', ['error' => "No result.", 'user' => $this->session->get('User')]);
             }
       }
 

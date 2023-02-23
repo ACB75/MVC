@@ -53,6 +53,7 @@ class DB
 
     function selectAll($table): array
     {
+        $this->queryBuilder = new QueryBuilder();
         $this->queryBuilder->select("*");
         $this->queryBuilder->from($table);
 
@@ -77,16 +78,17 @@ class DB
                 $filter .= $keys[$i] . "='" . $values[$i] . "' AND ";
         }
 
-        if (!$all)
-            $columns = implode(",", $keys);
-        else
+        if ($all)
             $columns = "*";
+        else
+            $columns = implode(",", $keys);
 
+        $this->queryBuilder = new QueryBuilder();
         $this->queryBuilder->select($columns);
         $this->queryBuilder->from($table);
         $this->queryBuilder->where($filter);
-
-        $sql = substr($this->queryBuilder->__toString(), 0, -5) . ";";
+        
+        $sql = substr($this->queryBuilder->__toString(), 0, -4) . ";";
 
         $stmt = $this->query($sql);
         $stmt->execute();
@@ -95,18 +97,20 @@ class DB
         return $rows;
     }
 
-    function selectAllWithJoin($table1, $table2, array $fields = null, string $join1, string $join2): array
+    function selectAllWithJoin($table1, $table2, $data, string $join1, string $join2): array
     {
-        if (is_array($fields)) {
-            $columns = implode(',', $fields);
+        $filter = "";
+        $keys = array_keys($data);
+        $values = array_values($data);
 
-        } else {
-            $columns = "*";
+        for ($i = 0; $i < count($keys); $i++) {
+            if ($values[$i] != "")
+                $filter .= $keys[$i] . "='" . $values[$i] . "' AND ";
         }
 
         $inners = "{$table1}.{$join1} = {$table2}.{$join2}";
 
-        $sql = "SELECT {$columns} FROM {$table1} INNER JOIN {$table2} ON {$inners}";
+        $sql = "SELECT {*} FROM {$table1} INNER JOIN {$table2} ON {$inners}";
 
         $stmt = $this->query($sql);
         $stmt->execute();
@@ -115,19 +119,38 @@ class DB
     }
 
     // només una condició
-    function selectWhereWithJoin($table1, $table2, array $fields = null, string $join1, string $join2, array $conditions): array
+    function selectWhereWithJoin(string $table, string $columns = null, string $tableJoin1, string $tableJoin2, array $data, string $join1, $all = false): array
     {
-        if (is_array($fields)) {
-            $columns = implode(',', $fields);
-        } else {
+        $conditions = "";
+        $keys = array_keys($data);
+        $values = array_values($data);
+
+        if ($all && $columns != "") {
             $columns = "*";
+        } else {
+            $columns = implode(',', $columns);
         }
 
-        $inners = "{$table1}.{$join1} = {$table2}.{$join2}";
-        $cond = "{$conditions[0]}='{$conditions[1]}'";
+        for ($i = 0; $i < count($keys); $i++) {
+            if ($values[$i] != "")
+                $conditions .= $keys[$i] . "='" . $values[$i] . "' AND ";
+            $conditions = substr($conditions, 0, -5) . ";";
+        }
 
-        $sql = "SELECT {$columns} FROM {$table1} INNER JOIN {$table2} ON {$inners} WHERE {$cond} ";
+        if ($tableJoin1 != null && $tableJoin2 != null) {
+            $inner = "INNER JOIN {$tableJoin1} ON {$tableJoin1}.{$join1}_" . lcfirst($tableJoin2) . " = {$tableJoin2}.{$join1}";
+        }
 
+        /*
+        SELECT 
+        *
+        FROM
+        Library, User
+        INNER JOIN
+        User_Library ON User_Library.id_user = User.id
+        WHERE User_Library.id_user = 2;
+        */
+        $sql = "SELECT {$columns} FROM {$table}, {$tableJoin2} {$inner} WHERE {$conditions}";
 
         $stmt = $this->query($sql);
         $stmt->execute();
@@ -156,8 +179,7 @@ class DB
 
             if ($res)
                 return true;
-        } 
-        else
+        } else
             return false;
     }
 

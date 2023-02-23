@@ -18,7 +18,7 @@ include 'partials/header.tpl.php';
             <p> " . $lib->getYear() . " </p>";
             if (key_exists("user", $data)) {
               if ($data["user"] != null) {
-                $display .= "<a type='button' class='btn btn-warning me-1' href='/index/library_create'>ALQUILAR</a>";
+                $display .= "<a type='button' class='btn btn-warning me-1' href='/index/user_x_library/isbn/".$lib->getIsbn()."'> ALQUILAR </a>";
                 if ($data["user"]->getName() === 'master')
                   $display .= "<a type='button' class='btn btn-warning me-1' href='/index/library_update/isbn/" . $lib->getIsbn() . "'> Update </a>
                 <a type='button' class='btn btn-warning me-1' href='/index/library_delete/isbn/" . $lib->getIsbn() . "'> Delete </a>";
@@ -29,13 +29,13 @@ include 'partials/header.tpl.php';
         } else {
           $display = "<div class='col-md-12'>
             <div class='h-100 p-5 text-bg-dark rounded-3'>
-            <h2> " . $data["library"]->getAuthor() . "</h2>
+             <h2> " . $data["library"]->getAuthor() . "</h2>
             <p> " . $data["library"]->getIsbn() . " </p> 
             <p> " . $data["library"]->getTitle() . " </p>
             <p> " . $data["library"]->getYear() . " </p>";
           if (key_exists("user", $data)) {
             if ($data["user"] != null) {
-              $display .= "<a type='button' class='btn btn-warning me-1' href='/index/library_create'>ALQUILAR</a>";
+              $display .= "<a type='button' class='btn btn-warning me-1' href='/index/user_x_library/isbn/".$data["library"]->getIsbn()."'> ALQUILAR </a>";
               if ($data["user"]->getName() === 'master')
                 $display .= "<a type='button' class='btn btn-warning me-1' href='/index/library_update/isbn/" . $data["library"]->getIsbn() . "'> Update </a>
                 <a type='button' class='btn btn-warning me-1' href='/index/library_delete/isbn/" . $data["library"]->getIsbn() . "'> Delete </a>";

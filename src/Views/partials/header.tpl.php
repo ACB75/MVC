@@ -36,7 +36,8 @@
                                           $display =
                                                 "<a type='button' class='btn btn-outline-light me-3' href='/index/logout'>Logout</a>
                                                 <a type='button' class='btn btn-warning me-3' href='/index/dashboard'>Dashboard</a>
-                                                     <a type='button' class='btn btn-warning me-3' href='/index/library_read'>Library</a>";
+                                                     <a type='button' class='btn btn-warning me-3' href='/index/library_read'>Library</a>
+                                                     <a type='button' class='btn btn-warning me-3' href='/index/user_x_library'>PRESTADOS</a>";
                                           if ($data["user"]->getName() === 'master')
                                                 $display .= "<a type='button' class='btn btn-warning' href='/index/library_create'> Create Book </a>";
                                           echo $display;
