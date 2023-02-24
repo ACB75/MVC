@@ -10,6 +10,8 @@ class UserController extends Controller
 	{
 		if ($this->session->get("User"))
 			return $this->view('user', ["user" => $this->session->get("User")]);
+
+		return $this->view('user', []);
 	}
 
 	function create()

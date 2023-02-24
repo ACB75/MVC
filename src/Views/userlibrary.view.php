@@ -4,7 +4,7 @@ include 'partials/header.tpl.php';
 <main>
   <section class="container">
     <div class="col-md-4">
-      <h2>Library</h2>
+      <h2>UserLibrary</h2>
       <?php
       $display = "";
       if (key_exists("library", $data)) {
